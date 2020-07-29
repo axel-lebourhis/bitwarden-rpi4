@@ -77,11 +77,10 @@ function install() {
     fi
     
     pullSetup
-	docker pull bitwardenrs/server:latest
 	docker run -d --name bitwarden \
 	  -e ROCKET_TLS='{certs="/ssl/live/axellbhome.ddns.net/fullchain.pem",key="/ssl/live/axellbhome.ddns.net/privkey.pem"}' \
-	  -v ./bwdata/letsencrypt/:/ssl/ \
-	  -v ./bwdata/:/data/ \
+	  -v ${pwd}/bwdata/letsencrypt/:/ssl/ \
+	  -v ${pwd}/bwdata/:/data/ \
 	  -p 443:80 \
 	  bitwardenrs/server:latest
     #docker run -it --rm --name setup -v $OUTPUT_DIR:/bitwarden \
@@ -207,7 +206,7 @@ function certRestart() {
 }
 
 function pullSetup() {
-    docker pull bitwarden/setup:$COREVERSION
+    docker pull bitwardenrs/server:latest
 }
 
 # Commands
