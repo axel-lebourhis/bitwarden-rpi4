@@ -70,7 +70,7 @@ function install() {
     
             mkdir -p $OUTPUT_DIR/letsencrypt
             docker pull certbot/certbot:arm32v6-latest
-            docker run -it --rm --name certbot -p 8005:80 -v $OUTPUT_DIR/letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
+            docker run -it --rm --name certbot -p 80:80 -v $OUTPUT_DIR/letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
                 certonly --standalone --noninteractive  --agree-tos --preferred-challenges http \
                 --email $EMAIL -d $DOMAIN --logs-dir /etc/letsencrypt/logs
         fi
@@ -142,7 +142,7 @@ function updateLetsEncrypt() {
     if [ -d "${OUTPUT_DIR}/letsencrypt/live" ]
     then
         docker pull certbot/certbot:arm32v6-latest
-        docker run -i --rm --name certbot -p 443:443 -p 8005:80 -v $OUTPUT_DIR/letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
+        docker run -i --rm --name certbot -p 443:443 -p 80:80 -v $OUTPUT_DIR/letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
             renew --logs-dir /etc/letsencrypt/logs
     fi
 }
@@ -151,7 +151,7 @@ function forceUpdateLetsEncrypt() {
     if [ -d "${OUTPUT_DIR}/letsencrypt/live" ]
     then
         docker pull certbot/certbot:arm32v6-latest
-        docker run -i --rm --name certbot -p 443:443 -p 8005:80 -v $OUTPUT_DIR/letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
+        docker run -i --rm --name certbot -p 443:443 -p 80:80 -v $OUTPUT_DIR/letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
             renew --logs-dir /etc/letsencrypt/logs --force-renew
     fi
 }
