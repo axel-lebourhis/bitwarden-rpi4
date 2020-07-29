@@ -77,10 +77,17 @@ function install() {
     fi
     
     pullSetup
-    docker run -it --rm --name setup -v $OUTPUT_DIR:/bitwarden \
-        --env-file $ENV_DIR/uid.env bitwarden/setup:$COREVERSION \
-        dotnet Setup.dll -install 1 -domain $DOMAIN -letsencrypt $LETS_ENCRYPT -os $OS \
-        -corev $COREVERSION -webv $WEBVERSION
+	docker pull bitwardenrs/server:latest
+	docker run -d --name bitwarden \
+	  -e ROCKET_TLS='{certs="/ssl/live/axellbhome.ddns.net/fullchain.pem",key="/ssl/live/axellbhome.ddns.net/privkey.pem"}' \
+	  -v ./bwdata/letsencrypt/:/ssl/ \
+	  -v ./bwdata/:/data/ \
+	  -p 443:80 \
+	  bitwardenrs/server:latest
+    #docker run -it --rm --name setup -v $OUTPUT_DIR:/bitwarden \
+    #    --env-file $ENV_DIR/uid.env bitwarden/setup:$COREVERSION \
+    #    dotnet Setup.dll -install 1 -domain $DOMAIN -letsencrypt $LETS_ENCRYPT -os $OS \
+    #    -corev $COREVERSION -webv $WEBVERSION
 }
 
 function dockerComposeUp() {
