@@ -35,7 +35,7 @@ then
     OUTPUT=$2
 fi
 
-SCRIPTS_DIR="$OUTPUT/scripts"
+SCRIPTS_DIR="."
 GITHUB_BASE_URL="https://raw.githubusercontent.com/bitwarden/server/master"
 COREVERSION="1.36.1"
 WEBVERSION="2.15.1"
