@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-OUTPUT_DIR=".."
+OUTPUT_DIR="/bwdata"
 if [ $# -gt 1 ]
 then
     OUTPUT_DIR=$2
@@ -46,6 +46,9 @@ fi
 # Functions
 
 function install() {
+	mkdir -p $OUTPUT_DIR
+	rm -rf $OUTPUT_DIR/*
+
     LETS_ENCRYPT="n"
     echo -e -n "${CYAN}(!)${NC} Enter the domain name for your Bitwarden instance (ex. bitwarden.example.com): "
     read DOMAIN
@@ -68,19 +71,20 @@ function install() {
             read EMAIL
             echo ""
     
-            mkdir -p $OUTPUT_DIR/letsencrypt
+            mkdir -p /letsencrypt
+			rm -rf /letsencrypt/*
             docker pull certbot/certbot:arm32v6-latest
-            docker run -it --rm --name certbot -p 80:80 -v $OUTPUT_DIR/letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
+            docker run -it --rm --name certbot -p 80:80 -v /letsencrypt:/etc/letsencrypt/ certbot/certbot:arm32v6-latest \
                 certonly --standalone --noninteractive  --agree-tos --preferred-challenges http \
                 --email $EMAIL -d $DOMAIN --logs-dir /etc/letsencrypt/logs
         fi
     fi
     
-    pullSetup
+    docker pull bitwardenrs/server:latest
 	docker run -d --name bitwarden \
 	  -e ROCKET_TLS='{certs="/ssl/live/axellbhome.ddns.net/fullchain.pem",key="/ssl/live/axellbhome.ddns.net/privkey.pem"}' \
-	  -v ${pwd}/bwdata/letsencrypt/:/ssl/ \
-	  -v ${pwd}/bwdata/:/data/ \
+	  -v /letsencrypt:/ssl \
+	  -v $OUTPUT_DIR:/data \
 	  -p 443:80 \
 	  bitwardenrs/server:latest
     #docker run -it --rm --name setup -v $OUTPUT_DIR:/bitwarden \
